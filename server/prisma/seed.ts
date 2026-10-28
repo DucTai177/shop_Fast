@@ -1,4 +1,13 @@
-import { PrismaClient, UserRole, OrderStatus, PaymentStatus, TicketCategory, TicketStatus, TicketPriority, SenderType } from '@prisma/client';
+import {
+  PrismaClient,
+  UserRole,
+  OrderStatus,
+  PaymentStatus,
+  TicketCategory,
+  TicketStatus,
+  TicketPriority,
+  SenderType,
+} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -120,7 +129,8 @@ async function main() {
       sku: 'SF-IP15PM-256',
       name: 'iPhone 15 Pro Max 256GB Titan Tự Nhiên',
       slug: 'iphone-15-pro-max-256gb',
-      description: 'Thiết kế Titan chuẩn hàng không vũ trụ, chip A17 Pro mạnh mẽ, camera tiềm vọng zoom 5x.',
+      description:
+        'Thiết kế Titan chuẩn hàng không vũ trụ, chip A17 Pro mạnh mẽ, camera tiềm vọng zoom 5x.',
       price: 29990000,
       originalPrice: 34990000,
       stock: 45,
@@ -132,7 +142,8 @@ async function main() {
       sku: 'SF-SGS24U-256',
       name: 'Samsung Galaxy S24 Ultra 256GB AI Phone',
       slug: 'samsung-galaxy-s24-ultra-256gb',
-      description: 'Quyền năng Galaxy AI, khung viền Titan và bút S-Pen tích hợp.',
+      description:
+        'Quyền năng Galaxy AI, khung viền Titan và bút S-Pen tích hợp.',
       price: 27990000,
       originalPrice: 31990000,
       stock: 30,
@@ -144,7 +155,8 @@ async function main() {
       sku: 'SF-MBA-M3-16',
       name: 'MacBook Air M3 13 inch (16GB RAM / 512GB SSD)',
       slug: 'macbook-air-m3-16gb-512gb',
-      description: 'Siêu mỏng nhẹ, chip M3 đỉnh cao đồ hoạ, thời lượng pin lên đến 18 tiếng.',
+      description:
+        'Siêu mỏng nhẹ, chip M3 đỉnh cao đồ hoạ, thời lượng pin lên đến 18 tiếng.',
       price: 32490000,
       originalPrice: 35990000,
       stock: 20,
@@ -156,7 +168,8 @@ async function main() {
       sku: 'SF-SONY-XM5',
       name: 'Tai nghe chụp tai Sony WH-1000XM5 Chống Ồn',
       slug: 'tai-nghe-sony-wh-1000xm5',
-      description: 'Công nghệ chống ồn đỉnh cao hàng đầu thế giới với 2 bộ xử lý và 8 micro.',
+      description:
+        'Công nghệ chống ồn đỉnh cao hàng đầu thế giới với 2 bộ xử lý và 8 micro.',
       price: 7490000,
       originalPrice: 8490000,
       stock: 18,
@@ -168,7 +181,8 @@ async function main() {
       sku: 'SF-LOGI-MXM3S',
       name: 'Chuột Không Dây Logitech MX Master 3S',
       slug: 'chuot-logitech-mx-master-3s',
-      description: 'Cảm biến 8000 DPI Darkfield di chuyển mượt mà trên mọi bề mặt, con lăn MagSpeed siêu tốc.',
+      description:
+        'Cảm biến 8000 DPI Darkfield di chuyển mượt mà trên mọi bề mặt, con lăn MagSpeed siêu tốc.',
       price: 2190000,
       originalPrice: 2490000,
       stock: 65,
@@ -180,7 +194,8 @@ async function main() {
       sku: 'SF-LOGI-MXMECH',
       name: 'Bàn Phím Cơ Không Dây Logitech MX Mechanical Tactile',
       slug: 'ban-phim-logitech-mx-mechanical',
-      description: 'Phím cơ switch Low Profile êm ái, đèn nền thông minh tự điều chỉnh theo môi trường.',
+      description:
+        'Phím cơ switch Low Profile êm ái, đèn nền thông minh tự điều chỉnh theo môi trường.',
       price: 3290000,
       originalPrice: 3890000,
       stock: 40,
@@ -192,7 +207,8 @@ async function main() {
       sku: 'SF-ANKER-65W',
       name: 'Củ Sạc Nhanh Anker 65W GaNPrime 3 Cổng (A2668)',
       slug: 'cu-sac-nhanh-anker-65w-gan',
-      description: 'Công nghệ GaNPrime độc quyền nhỏ gọn hơn 53%, công suất 65W sạc nhanh cùng lúc 3 thiết bị.',
+      description:
+        'Công nghệ GaNPrime độc quyền nhỏ gọn hơn 53%, công suất 65W sạc nhanh cùng lúc 3 thiết bị.',
       price: 850000,
       originalPrice: 1100000,
       stock: 150,
@@ -209,8 +225,12 @@ async function main() {
   console.log(`✅ ${products.length} Products seeded.`);
 
   // 6. Seed Orders & Order Histories (for Realtime F02 & AI lookup F01)
-  const productPhone = await prisma.product.findUnique({ where: { sku: 'SF-IP15PM-256' } });
-  const productCharger = await prisma.product.findUnique({ where: { sku: 'SF-ANKER-65W' } });
+  const productPhone = await prisma.product.findUnique({
+    where: { sku: 'SF-IP15PM-256' },
+  });
+  const productCharger = await prisma.product.findUnique({
+    where: { sku: 'SF-ANKER-65W' },
+  });
 
   if (productPhone && productCharger) {
     // Order 1: Đang giao hàng (SHIPPING)
@@ -226,7 +246,8 @@ async function main() {
         totalAmount: 30840000,
         receiverName: customer1.fullName,
         receiverPhone: customer1.phone || '0901000004',
-        shippingAddress: 'Tòa nhà Landmark 81, Phường 22, Quận Bình Thạnh, TP. Hồ Chí Minh',
+        shippingAddress:
+          'Tòa nhà Landmark 81, Phường 22, Quận Bình Thạnh, TP. Hồ Chí Minh',
         notes: 'Giao giờ hành chính, gọi trước 15 phút',
         items: {
           create: [
@@ -285,7 +306,9 @@ async function main() {
       ],
     });
 
-    console.log(`✅ Order 1 (SF20261028001) seeded with 4 status history events.`);
+    console.log(
+      `✅ Order 1 (SF20261028001) seeded with 4 status history events.`,
+    );
   }
 
   // 7. Seed Support Ticket & Messages (for AI Agent F01)
@@ -303,11 +326,13 @@ async function main() {
           {
             senderType: SenderType.CUSTOMER,
             senderId: customer1.id,
-            content: 'Chào ShopFast, đơn hàng SF20261028001 của tôi khi nào sẽ giao đến Landmark 81 vậy?',
+            content:
+              'Chào ShopFast, đơn hàng SF20261028001 của tôi khi nào sẽ giao đến Landmark 81 vậy?',
           },
           {
             senderType: SenderType.AI_AGENT,
-            content: 'Xin chào anh Lê Hoàng Nam! Trợ lý AI ShopFast đã tra cứu đơn hàng SF20261028001 của anh: Đơn hàng hiện đang ở trạng thái Đang giao hàng (SHIPPING), bàn giao qua Viettel Post (Mã bưu gửi: VTP889922). Dự kiến bưu tá sẽ giao tới Landmark 81 trong ngày hôm nay!',
+            content:
+              'Xin chào anh Lê Hoàng Nam! Trợ lý AI ShopFast đã tra cứu đơn hàng SF20261028001 của anh: Đơn hàng hiện đang ở trạng thái Đang giao hàng (SHIPPING), bàn giao qua Viettel Post (Mã bưu gửi: VTP889922). Dự kiến bưu tá sẽ giao tới Landmark 81 trong ngày hôm nay!',
             toolCalls: {
               tool: 'checkOrderStatus',
               orderNumber: 'SF20261028001',
