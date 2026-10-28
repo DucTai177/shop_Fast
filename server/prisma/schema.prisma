@@ -1,0 +1,289 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -------------------------------------------------------------
+// ENUMS
+// -------------------------------------------------------------
+
+enum UserRole {
+  CUSTOMER
+  SUPPORT_AGENT
+  WAREHOUSE_STAFF
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PACKING
+  SHIPPING
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+enum TicketCategory {
+  ORDER_INQUIRY
+  INVENTORY_CHECK
+  RETURN_REFUND
+  COMPLAINT
+  OTHER
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum SenderType {
+  CUSTOMER
+  AI_AGENT
+  SUPPORT_AGENT
+}
+
+// -------------------------------------------------------------
+// USER & AUTH (F06, F03)
+// -------------------------------------------------------------
+
+model User {
+  id               String       @id @default(uuid())
+  email            String       @unique
+  passwordHash     String
+  fullName         String
+  phone            String?
+  role             UserRole     @default(CUSTOMER)
+  isActive         Boolean      @default(true)
+  failedLoginCount Int          @default(0)
+  lockedUntil      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  // Relations
+  orders           Order[]
+  cart             Cart?
+  createdTickets   Ticket[]     @relation("CreatedTickets")
+  assignedTickets  Ticket[]     @relation("AssignedTickets")
+  ticketMessages   TicketMessage[]
+  statusHistories  OrderStatusHistory[]
+
+  @@map("users")
+}
+
+// -------------------------------------------------------------
+// CATALOG: CATEGORIES & PRODUCTS (F06, F04, F01)
+// -------------------------------------------------------------
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String?
+  parentId    String?
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id            String      @id @default(uuid())
+  sku           String      @unique
+  name          String
+  slug          String      @unique
+  description   String?
+  price         Decimal     @db.Decimal(12, 2)
+  originalPrice Decimal?    @db.Decimal(12, 2)
+  stock         Int         @default(0)
+  brand         String?
+  images        String[]    @default([])
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  orderItems    OrderItem[]
+  cartItems     CartItem[]
+
+  @@index([categoryId])
+  @@index([brand])
+  @@index([price])
+  @@index([stock])
+  @@index([isActive])
+  @@map("products")
+}
+
+// -------------------------------------------------------------
+// CART (F06)
+// -------------------------------------------------------------
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+
+  @@unique([cartId, productId])
+  @@map("cart_items")
+}
+
+// -------------------------------------------------------------
+// ORDERS & TRACKING (F06, F02, F05)
+// -------------------------------------------------------------
+
+model Order {
+  id              String         @id @default(uuid())
+  orderNumber     String         @unique
+  userId          String
+  user            User           @relation(fields: [userId], references: [id])
+  status          OrderStatus    @default(PENDING)
+  paymentStatus   PaymentStatus  @default(UNPAID)
+  paymentMethod   String         @default("COD")
+  subtotal        Decimal        @db.Decimal(12, 2)
+  shippingFee     Decimal        @default(0) @db.Decimal(12, 2)
+  totalAmount     Decimal        @db.Decimal(12, 2)
+  receiverName    String
+  receiverPhone   String
+  shippingAddress String
+  notes           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  items           OrderItem[]
+  statusHistories OrderStatusHistory[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  productName String
+  sku         String
+  price       Decimal  @db.Decimal(12, 2)
+  quantity    Int
+  totalPrice  Decimal  @db.Decimal(12, 2)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model OrderStatusHistory {
+  id          String       @id @default(uuid())
+  orderId     String
+  order       Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus  OrderStatus?
+  toStatus    OrderStatus
+  note        String?
+  updatedById String?
+  updatedBy   User?        @relation(fields: [updatedById], references: [id])
+  createdAt   DateTime     @default(now())
+
+  @@index([orderId])
+  @@map("order_status_histories")
+}
+
+// -------------------------------------------------------------
+// CUSTOMER SUPPORT TICKETS & AI AGENT (F01)
+// -------------------------------------------------------------
+
+model Ticket {
+  id           String         @id @default(uuid())
+  ticketNumber String         @unique
+  userId       String
+  user         User           @relation("CreatedTickets", fields: [userId], references: [id])
+  title        String
+  category     TicketCategory @default(OTHER)
+  status       TicketStatus   @default(OPEN)
+  priority     TicketPriority @default(MEDIUM)
+  assignedToId String?
+  assignedTo   User?          @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  messages     TicketMessage[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([category])
+  @@map("tickets")
+}
+
+model TicketMessage {
+  id                   String     @id @default(uuid())
+  ticketId             String
+  ticket               Ticket     @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderType           SenderType
+  senderId             String?
+  sender               User?      @relation(fields: [senderId], references: [id])
+  content              String
+  toolCalls            Json?
+  requiresHumanConfirm Boolean    @default(false)
+  createdAt            DateTime   @default(now())
+
+  @@index([ticketId])
+  @@map("ticket_messages")
+}
+
+// -------------------------------------------------------------
+// BACKGROUND JOBS IDEMPOTENCY (F05)
+// -------------------------------------------------------------
+
+model IdempotencyKey {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  jobType   String
+  status    String   // PROCESSING, COMPLETED, FAILED
+  response  Json?
+  createdAt DateTime @default(now())
+
+  @@index([key])
+  @@map("idempotency_keys")
+}
