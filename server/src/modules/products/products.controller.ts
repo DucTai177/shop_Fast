@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -97,12 +98,12 @@ export class ProductsController {
   @ApiOperation({
     summary: 'Cập nhật giá hoặc tồn kho (Tự động xóa sạch Cache cũ F04)',
   })
-  @ApiParam({ name: 'id', description: 'ID sản phẩm cần sửa' })
+  @ApiParam({ name: 'id', description: 'ID sản phẩm dạng số cần sửa (ví dụ: 1)' })
   @ApiResponse({ status: 200, description: 'Cập nhật thành công, bộ đệm cache đã làm mới' })
   @ApiResponse({ status: 403, description: 'Không có quyền truy cập' })
   @ApiResponse({ status: 404, description: 'Không tìm thấy sản phẩm' })
   async updateProduct(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateProductDto,
   ) {
     return this.productsService.updateProduct(id, dto);
@@ -117,9 +118,9 @@ export class ProductsController {
   @Roles(UserRole.ADMIN, UserRole.WAREHOUSE_STAFF)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Ẩn sản phẩm (Chỉ Admin và Nhân viên Kho)' })
-  @ApiParam({ name: 'id', description: 'ID sản phẩm cần ẩn' })
+  @ApiParam({ name: 'id', description: 'ID sản phẩm dạng số cần ẩn (ví dụ: 1)' })
   @ApiResponse({ status: 200, description: 'Đã ẩn sản phẩm và làm mới cache' })
-  async deleteProduct(@Param('id') id: string) {
+  async deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.deleteProduct(id);
   }
 }

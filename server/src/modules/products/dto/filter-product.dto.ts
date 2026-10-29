@@ -8,10 +8,11 @@ export class FilterProductDto {
   @IsOptional()
   search?: string;
 
-  @ApiPropertyOptional({ description: 'Lọc theo ID danh mục' })
-  @IsString()
+  @ApiPropertyOptional({ description: 'Lọc theo ID danh mục (số nguyên ví dụ: 1)', example: 1 })
+  @Type(() => Number)
+  @IsInt({ message: 'categoryId phải là số nguyên' })
   @IsOptional()
-  categoryId?: string;
+  categoryId?: number;
 
   @ApiPropertyOptional({ description: 'Lọc theo slug danh mục (ví dụ: dien-thoai-tablet)' })
   @IsString()

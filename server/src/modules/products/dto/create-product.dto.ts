@@ -56,12 +56,13 @@ export class CreateProductDto {
   brand?: string;
 
   @ApiProperty({
-    example: '5458f6b8-bdd3-4b0f-9142-3954485ee191',
-    description: 'ID danh mục sản phẩm (Lấy từ GET /api/v1/categories)',
+    example: 1,
+    description: 'ID danh mục sản phẩm dạng số tăng dần (Lấy từ GET /api/v1/categories)',
   })
-  @IsString()
+  @Type(() => Number)
+  @IsInt({ message: 'categoryId phải là số nguyên' })
   @IsNotEmpty({ message: 'Danh mục không được để trống' })
-  categoryId: string;
+  categoryId: number;
 
   @ApiPropertyOptional({
     example: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569'],

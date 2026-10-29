@@ -166,14 +166,19 @@ export class ProductsService {
       };
     }
 
-    // 2. Truy vấn DB
+    // 2. Truy vấn DB (Nếu là chuỗi số nguyên thuần -> tìm theo ID, ngược lại tìm theo slug hoặc sku)
+    const numericId = parseInt(idOrSlug, 10);
+    const orConditions: Prisma.ProductWhereInput[] = [
+      { slug: idOrSlug },
+      { sku: idOrSlug },
+    ];
+    if (!isNaN(numericId) && String(numericId) === idOrSlug.trim()) {
+      orConditions.unshift({ id: numericId });
+    }
+
     const product = await this.prisma.product.findFirst({
       where: {
-        OR: [
-          { id: idOrSlug },
-          { slug: idOrSlug },
-          { sku: idOrSlug },
-        ],
+        OR: orConditions,
       },
       include: {
         category: true,
@@ -250,7 +255,7 @@ export class ProductsService {
   /**
    * Cập nhật thông tin sản phẩm, giá hoặc tồn kho (Cache Invalidation bắt buộc F04)
    */
-  async updateProduct(id: string, dto: UpdateProductDto) {
+  async updateProduct(id: number, dto: UpdateProductDto) {
     const product = await this.prisma.product.findUnique({
       where: { id },
     });
@@ -288,7 +293,7 @@ export class ProductsService {
   /**
    * Xóa sản phẩm (Soft delete)
    */
-  async deleteProduct(id: string) {
+  async deleteProduct(id: number) {
     const product = await this.prisma.product.findUnique({
       where: { id },
     });
