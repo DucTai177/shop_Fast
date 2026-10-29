@@ -9,5 +9,8 @@
     "build:client": "cd client && npm run build",
     "db:seed": "cd server && npm run db:seed",
     "db:push": "cd server && npm run prisma:push"
+  },
+  "dependencies": {
+    "docx": "^9.15.0"
   }
 }
