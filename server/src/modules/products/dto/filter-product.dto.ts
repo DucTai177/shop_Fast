@@ -3,12 +3,18 @@ import { Type } from 'class-transformer';
 import { IsInt, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class FilterProductDto {
-  @ApiPropertyOptional({ description: 'Tìm kiếm theo tên sản phẩm hoặc mô tả' })
+  @ApiPropertyOptional({ description: 'Tìm kiếm theo tên sản phẩm, mã SKU, slug hoặc ID sản phẩm', example: 'iphone' })
   @IsString()
   @IsOptional()
   search?: string;
 
-  @ApiPropertyOptional({ description: 'Lọc theo ID danh mục (số nguyên ví dụ: 1)', example: 1 })
+  @ApiPropertyOptional({ description: 'Lọc chính xác theo ID sản phẩm (số nguyên, ví dụ: 9)', example: 9 })
+  @Type(() => Number)
+  @IsInt({ message: 'id sản phẩm phải là số nguyên' })
+  @IsOptional()
+  id?: number;
+
+  @ApiPropertyOptional({ description: 'Lọc theo ID danh mục (1: Điện Thoại, 2: Laptop, 3: Âm Thanh, 4: Phụ Kiện)', example: 1 })
   @Type(() => Number)
   @IsInt({ message: 'categoryId phải là số nguyên' })
   @IsOptional()
