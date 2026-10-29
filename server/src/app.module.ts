@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { RedisModule } from './common/redis/redis.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
+import { CartModule } from './modules/cart/cart.module.js';
+import { OrdersModule } from './modules/orders/orders.module.js';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { ProductsModule } from './modules/products/products.module.js';
     RedisModule,
     AuthModule,
     ProductsModule,
+    CartModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

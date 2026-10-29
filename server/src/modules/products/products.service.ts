@@ -65,7 +65,6 @@ export class ProductsService {
     // 2. Cache miss -> Truy vấn PostgreSQL qua Prisma
     const {
       search,
-      id,
       categoryId,
       categorySlug,
       brand,
@@ -81,23 +80,14 @@ export class ProductsService {
       isActive: true,
     };
 
-    if (id !== undefined) {
-      where.id = id;
-    }
-
     if (search) {
-      const searchNum = parseInt(search, 10);
-      const orConditions: Prisma.ProductWhereInput[] = [
+      where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
         { slug: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
         { brand: { contains: search, mode: 'insensitive' } },
         { sku: { contains: search, mode: 'insensitive' } },
       ];
-      if (!isNaN(searchNum) && String(searchNum) === search.trim()) {
-        orConditions.unshift({ id: searchNum });
-      }
-      where.OR = orConditions;
     }
 
     if (categoryId) {

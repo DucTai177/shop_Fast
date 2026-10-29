@@ -47,7 +47,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Đăng nhập hệ thống (Có cơ chế chống Brute-Force F03)',
+    summary: 'Đăng nhập hệ thống' //Có cơ chế chống Brute-Force F03
   })
   @ApiResponse({ status: 200, description: 'Đăng nhập thành công' })
   @ApiResponse({ status: 401, description: 'Sai email hoặc mật khẩu' })
