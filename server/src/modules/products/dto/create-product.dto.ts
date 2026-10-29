@@ -55,7 +55,10 @@ export class CreateProductDto {
   @IsOptional()
   brand?: string;
 
-  @ApiProperty({ example: 'uuid-danh-muc', description: 'ID danh mục sản phẩm' })
+  @ApiProperty({
+    example: '5458f6b8-bdd3-4b0f-9142-3954485ee191',
+    description: 'ID danh mục sản phẩm (Lấy từ GET /api/v1/categories)',
+  })
   @IsString()
   @IsNotEmpty({ message: 'Danh mục không được để trống' })
   categoryId: string;

@@ -202,6 +202,16 @@ export class ProductsService {
   async createProduct(dto: CreateProductDto) {
     const slug = dto.slug || this.generateSlug(dto.name);
 
+    // Kiểm tra danh mục có tồn tại không
+    const category = await this.prisma.category.findUnique({
+      where: { id: dto.categoryId },
+    });
+    if (!category) {
+      throw new NotFoundException(
+        `Danh mục có ID "${dto.categoryId}" không tồn tại trong hệ thống. Vui lòng lấy ID từ API GET /api/v1/categories.`,
+      );
+    }
+
     const existing = await this.prisma.product.findFirst({
       where: {
         OR: [{ sku: dto.sku }, { slug }],
