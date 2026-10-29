@@ -21,15 +21,15 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 
 @ApiTags('Authentication (Xác thực & Phân quyền)')
-@Controller() // Để trống để viết tường minh toàn bộ đường dẫn link bên dưới như Express
+@Controller('auth') // Chuẩn kiến trúc NestJS: Quản lý nhóm tài nguyên /auth (Prefix chung /api/v1 được cấu hình tại main.ts)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /**
    * Đăng ký tài khoản
-   * Đường dẫn: POST /api/v1/auth/register
+   * Đường dẫn đầy đủ: POST /api/v1/auth/register
    */
-  @Post('/api/v1/auth/register')
+  @Post('register')
   @ApiOperation({ summary: 'Đăng ký tài khoản khách hàng mới' })
   @ApiResponse({
     status: 201,
@@ -42,9 +42,9 @@ export class AuthController {
 
   /**
    * Đăng nhập (Chống dò mật khẩu Brute-force F03)
-   * Đường dẫn: POST /api/v1/auth/login
+   * Đường dẫn đầy đủ: POST /api/v1/auth/login
    */
-  @Post('/api/v1/auth/login')
+  @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Đăng nhập hệ thống (Có cơ chế chống Brute-Force F03)',
@@ -61,9 +61,9 @@ export class AuthController {
 
   /**
    * Cấp lại token khi token cũ hết hạn
-   * Đường dẫn: POST /api/v1/auth/refresh
+   * Đường dẫn đầy đủ: POST /api/v1/auth/refresh
    */
-  @Post('/api/v1/auth/refresh')
+  @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Làm mới Access Token bằng Refresh Token' })
   @ApiResponse({ status: 200, description: 'Cấp mới token thành công' })
@@ -77,9 +77,9 @@ export class AuthController {
 
   /**
    * Lấy thông tin tài khoản hiện tại từ Token
-   * Đường dẫn: GET /api/v1/auth/me
+   * Đường dẫn đầy đủ: GET /api/v1/auth/me
    */
-  @Get('/api/v1/auth/me')
+  @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Lấy thông tin tài khoản hiện tại từ Token' })

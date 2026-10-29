@@ -6,6 +6,11 @@ import { AppModule } from './app.module.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Global Prefix: Chuẩn NestJS cho toàn bộ API phiên bản v1 (/api/v1/...)
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['/'],
+  });
+
   // Validation
   app.useGlobalPipes(
     new ValidationPipe({
