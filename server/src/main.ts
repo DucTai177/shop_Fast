@@ -6,10 +6,6 @@ import { AppModule } from './app.module.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Global Prefix
-  const apiPrefix = process.env.API_PREFIX || 'api/v1';
-  app.setGlobalPrefix(apiPrefix);
-
   // Validation
   app.useGlobalPipes(
     new ValidationPipe({
@@ -37,7 +33,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`🚀 ShopFast Server running on: http://localhost:${port}/${apiPrefix}`);
+  console.log(`🚀 ShopFast Server running on: http://localhost:${port}`);
   console.log(`📚 Swagger Documentation on: http://localhost:${port}/api/docs`);
 }
 await bootstrap();

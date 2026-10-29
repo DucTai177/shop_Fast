@@ -19,7 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'shopfast_jwt_super_secret_key_2026_module6_defense',
+      secretOrKey:
+        configService.get<string>('JWT_SECRET') ||
+        'shopfast_jwt_super_secret_key_2026_module6_defense',
     });
   }
 
@@ -38,7 +40,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
 
     if (!user || !user.isActive) {
-      throw new UnauthorizedException('Tài khoản không tồn tại hoặc đã bị vô hiệu hóa.');
+      throw new UnauthorizedException(
+        'Tài khoản không tồn tại hoặc đã bị vô hiệu hóa.',
+      );
     }
 
     return user;
