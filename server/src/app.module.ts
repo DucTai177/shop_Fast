@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
 import { OrdersModule } from './modules/orders/orders.module.js';
+import { QueueModule } from './modules/queue/queue.module.js';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OrdersModule } from './modules/orders/orders.module.js';
     ProductsModule,
     CartModule,
     OrdersModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],

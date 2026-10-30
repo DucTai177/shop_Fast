@@ -22,3 +22,4 @@ export class AddToCartDto {
   @Min(1, { message: 'Số lượng phải lớn hơn hoặc bằng 1' })
   quantity: number = 1;
 }
+

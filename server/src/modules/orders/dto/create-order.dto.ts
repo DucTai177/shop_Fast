@@ -26,12 +26,18 @@ export class OrderItemInputDto {
 }
 
 export class CreateOrderDto {
-  @ApiProperty({ example: 'Nguyễn Văn An', description: 'Họ tên người nhận hàng' })
+  @ApiProperty({
+    example: 'Nguyễn Văn An',
+    description: 'Họ tên người nhận hàng',
+  })
   @IsString()
   @IsNotEmpty({ message: 'Tên người nhận không được để trống' })
   receiverName: string;
 
-  @ApiProperty({ example: '0901234567', description: 'Số điện thoại nhận hàng' })
+  @ApiProperty({
+    example: '0901234567',
+    description: 'Số điện thoại nhận hàng',
+  })
   @IsString()
   @IsNotEmpty({ message: 'Số điện thoại nhận hàng không được để trống' })
   receiverPhone: string;
@@ -47,11 +53,14 @@ export class CreateOrderDto {
   @ApiPropertyOptional({
     example: 'COD',
     enum: ['COD', 'BANK_TRANSFER'],
-    description: 'Phương thức thanh toán (COD: Thanh toán khi nhận hàng, BANK_TRANSFER: Chuyển khoản)',
+    description:
+      'Phương thức thanh toán (COD: Thanh toán khi nhận hàng, BANK_TRANSFER: Chuyển khoản)',
     default: 'COD',
   })
   @IsString()
-  @IsIn(['COD', 'BANK_TRANSFER'], { message: 'Phương thức thanh toán phải là COD hoặc BANK_TRANSFER' })
+  @IsIn(['COD', 'BANK_TRANSFER'], {
+    message: 'Phương thức thanh toán phải là COD hoặc BANK_TRANSFER',
+  })
   @IsOptional()
   paymentMethod?: string = 'COD';
 

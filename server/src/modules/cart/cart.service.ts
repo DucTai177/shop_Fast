@@ -65,7 +65,8 @@ export class CartService {
     const formattedItems = (fullCart?.items || []).map((item) => {
       const price = Number(item.product.price);
       const itemTotal = price * item.quantity;
-      const isOutOfStock = item.product.stock < item.quantity || !item.product.isActive;
+      const isOutOfStock =
+        item.product.stock < item.quantity || !item.product.isActive;
 
       if (isOutOfStock) {
         hasOutOfStockItem = true;
@@ -80,7 +81,9 @@ export class CartService {
         productName: item.product.name,
         sku: item.product.sku,
         price,
-        originalPrice: item.product.originalPrice ? Number(item.product.originalPrice) : null,
+        originalPrice: item.product.originalPrice
+          ? Number(item.product.originalPrice)
+          : null,
         stock: item.product.stock,
         images: item.product.images,
         quantity: item.quantity,
@@ -111,7 +114,9 @@ export class CartService {
     });
 
     if (!product || !product.isActive) {
-      throw new NotFoundException(`Sản phẩm có ID "${dto.productId}" không tồn tại hoặc đã ngừng kinh doanh.`);
+      throw new NotFoundException(
+        `Sản phẩm có ID "${dto.productId}" không tồn tại hoặc đã ngừng kinh doanh.`,
+      );
     }
 
     // 2. Kiểm tra tồn kho có đủ số lượng yêu cầu không
@@ -161,7 +166,11 @@ export class CartService {
   /**
    * Cập nhật số lượng của một món trong giỏ hàng
    */
-  async updateCartItem(userId: string, cartItemId: string, dto: UpdateCartItemDto) {
+  async updateCartItem(
+    userId: string,
+    cartItemId: string,
+    dto: UpdateCartItemDto,
+  ) {
     const cart = await this.getOrCreateCart(userId);
 
     const item = await this.prisma.cartItem.findFirst({
@@ -173,7 +182,9 @@ export class CartService {
     });
 
     if (!item) {
-      throw new NotFoundException(`Không tìm thấy món hàng có mã "${cartItemId}" trong giỏ của bạn.`);
+      throw new NotFoundException(
+        `Không tìm thấy món hàng có mã "${cartItemId}" trong giỏ của bạn.`,
+      );
     }
 
     // Nếu số lượng = 0 thì tiến hành xóa món khỏi giỏ
@@ -213,7 +224,9 @@ export class CartService {
     });
 
     if (!item) {
-      throw new NotFoundException(`Không tìm thấy món hàng có mã "${cartItemId}" trong giỏ của bạn.`);
+      throw new NotFoundException(
+        `Không tìm thấy món hàng có mã "${cartItemId}" trong giỏ của bạn.`,
+      );
     }
 
     await this.prisma.cartItem.delete({

@@ -11,6 +11,7 @@ import { CreateOrderDto } from './dto/create-order.dto.js';
 import { FilterOrderDto } from './dto/filter-order.dto.js';
 import { CancelOrderDto, UpdateOrderStatusDto } from './dto/update-order-status.dto.js';
 import { OrderStatus, PaymentStatus, Prisma, UserRole } from '@prisma/client';
+import { QueueService } from '../queue/services/queue.service.js';
 
 export interface CurrentUserPayload {
   id: string;
@@ -26,6 +27,7 @@ export class OrdersService {
   constructor(
     private prisma: PrismaService,
     private redisService: RedisService,
+    private queueService: QueueService,
   ) {}
 
   /**
@@ -182,6 +184,31 @@ export class OrdersService {
       }
     } catch (err) {
       this.logger.warn('Lỗi làm mới cache sau khi tạo đơn:', err);
+    }
+
+    // 8. Đẩy tác vụ ngầm vào hàng đợi BullMQ (F05)
+    try {
+      // 8.1. Đẩy job gửi email xác nhận đặt hàng
+      const customer = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { email: true, fullName: true },
+      });
+
+      await this.queueService.addOrderConfirmationEmailJob({
+        ...createdOrder,
+        user: customer || undefined,
+      });
+
+      // 8.2. Nếu phương thức thanh toán là chuyển khoản (BANK_TRANSFER) -> Hẹn giờ tự động hủy nếu quá hạn 15 phút
+      if (dto.paymentMethod === 'BANK_TRANSFER') {
+        await this.queueService.addOrderTimeoutJob(
+          createdOrder.id,
+          createdOrder.orderNumber,
+          15 * 60 * 1000, // 15 phút
+        );
+      }
+    } catch (err: any) {
+      this.logger.warn(`Lỗi khi đẩy job vào BullMQ: ${err.message}`);
     }
 
     return {
@@ -380,6 +407,11 @@ export class OrdersService {
       }
     }
 
+    // Nếu đơn hàng đã được duyệt, thanh toán hoặc hủy -> Gỡ bỏ job hẹn giờ tự động hủy trong BullMQ
+    if (toStatus !== OrderStatus.PENDING) {
+      await this.queueService.removeOrderTimeoutJob(orderId);
+    }
+
     return {
       message: `Cập nhật trạng thái đơn hàng sang ${toStatus} thành công.`,
       data: updatedOrder,
@@ -420,3 +452,4 @@ export class OrdersService {
     });
   }
 }
+
