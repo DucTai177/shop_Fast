@@ -38,8 +38,11 @@ export class RealtimeGateway
   ) {}
 
   afterInit() {
-    this.logger.log('⚡ Socket.io Gateway đã sẵn sàng hoạt động (F02 Realtime)');
+    this.logger.log(' Socket.io Gateway đã sẵn sàng hoạt động (F02 Realtime)');
+
   }
+
+//xác thưc jwt khi client kết nối socket
 
   async handleConnection(client: Socket) {
     try {
@@ -67,7 +70,7 @@ export class RealtimeGateway
         ) {
           await client.join(REALTIME_ROOMS.ADMIN);
           this.logger.log(
-            `[Socket.io] 👑 Quản trị/Nhân viên "${payload.email}" (${payload.role}) đã kết nối: ${client.id}`,
+            `[Socket.io]  Quản trị/Nhân viên "${payload.email}" (${payload.role}) đã kết nối: ${client.id}`,
           );
         } else {
           this.logger.log(
@@ -81,7 +84,7 @@ export class RealtimeGateway
         });
       } else {
         this.logger.log(
-          `[Socket.io] 🌐 Client kết nối ở chế độ khách vãng lai: ${client.id}`,
+          `[Socket.io]  Client kết nối ở chế độ khách vãng lai: ${client.id}`,
         );
       }
     } catch {
@@ -92,7 +95,7 @@ export class RealtimeGateway
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`[Socket.io] 🔌 Client đã ngắt kết nối: ${client.id}`);
+    this.logger.log(`[Socket.io]  Client đã ngắt kết nối: ${client.id}`);
   }
 
   @SubscribeMessage(REALTIME_EVENTS.JOIN_ORDER)
@@ -201,3 +204,4 @@ export class RealtimeGateway
     );
   }
 }
+

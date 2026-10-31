@@ -18,3 +18,4 @@ export const REALTIME_EVENTS = {
   ROOM_LEFT: 'room:left',
   AUTHENTICATED: 'authenticated',
 } as const;
+

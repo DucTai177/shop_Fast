@@ -136,7 +136,7 @@ export class OrderTimeoutWorker extends WorkerHost {
           orderNumber: order.orderNumber,
           fromStatus: OrderStatus.PENDING,
           toStatus: OrderStatus.CANCELLED,
-          note: 'Hệ thống tự động hủy đơn do quá hạn thời gian thanh toán (BullMQ Worker F05)',
+          note: 'Hệ thống tự động hủy đơn do quá hạn thời gian thanh toán ',
           paymentStatus: order.paymentStatus,
           updatedAt: new Date().toISOString(),
           updatedBy: {
