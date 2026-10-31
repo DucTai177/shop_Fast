@@ -7,9 +7,11 @@ import { OrderTimeoutWorker } from './workers/order-timeout.worker.js';
 import { QueueService } from './services/queue.service.js';
 import { IdempotencyService } from './services/idempotency.service.js';
 import { QueueController } from './queue.controller.js';
+import { RealtimeModule } from '../realtime/realtime.module.js';
 
 @Module({
   imports: [
+    RealtimeModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

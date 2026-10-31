@@ -12,6 +12,7 @@ import { FilterOrderDto } from './dto/filter-order.dto.js';
 import { CancelOrderDto, UpdateOrderStatusDto } from './dto/update-order-status.dto.js';
 import { OrderStatus, PaymentStatus, Prisma, UserRole } from '@prisma/client';
 import { QueueService } from '../queue/services/queue.service.js';
+import { RealtimeService } from '../realtime/realtime.service.js';
 
 export interface CurrentUserPayload {
   id: string;
@@ -28,6 +29,7 @@ export class OrdersService {
     private prisma: PrismaService,
     private redisService: RedisService,
     private queueService: QueueService,
+    private realtimeService: RealtimeService,
   ) {}
 
   /**
@@ -210,6 +212,19 @@ export class OrdersService {
     } catch (err: any) {
       this.logger.warn(`Lỗi khi đẩy job vào BullMQ: ${err.message}`);
     }
+
+    // 9. Phát sự kiện Realtime Socket.io (F02)
+    this.realtimeService.notifyNewOrder({
+      orderId: createdOrder.id,
+      orderNumber: createdOrder.orderNumber,
+      userId: createdOrder.userId,
+      receiverName: createdOrder.receiverName,
+      totalAmount: Number(createdOrder.totalAmount),
+      paymentMethod: createdOrder.paymentMethod,
+      status: createdOrder.status,
+      createdAt: createdOrder.createdAt.toISOString(),
+      itemsCount: createdOrder.items.length,
+    });
 
     return {
       message: 'Đặt hàng thành công!',
@@ -411,6 +426,22 @@ export class OrdersService {
     if (toStatus !== OrderStatus.PENDING) {
       await this.queueService.removeOrderTimeoutJob(orderId);
     }
+
+    // Phát sự kiện Realtime Socket.io cho khách hàng và Admin (F02)
+    this.realtimeService.notifyOrderStatusChanged({
+      orderId: updatedOrder.id,
+      orderNumber: updatedOrder.orderNumber,
+      fromStatus,
+      toStatus,
+      note: dto.note || `Trạng thái đơn hàng cập nhật từ ${fromStatus} sang ${toStatus}`,
+      paymentStatus: updatedOrder.paymentStatus,
+      updatedAt: new Date().toISOString(),
+      updatedBy: {
+        id: currentUser.id,
+        fullName: currentUser.fullName,
+        role: currentUser.role,
+      },
+    });
 
     return {
       message: `Cập nhật trạng thái đơn hàng sang ${toStatus} thành công.`,

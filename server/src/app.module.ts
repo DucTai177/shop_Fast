@@ -9,6 +9,7 @@ import { ProductsModule } from './modules/products/products.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
 import { OrdersModule } from './modules/orders/orders.module.js';
 import { QueueModule } from './modules/queue/queue.module.js';
+import { RealtimeModule } from './modules/realtime/realtime.module.js';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { QueueModule } from './modules/queue/queue.module.js';
     CartModule,
     OrdersModule,
     QueueModule,
+    RealtimeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

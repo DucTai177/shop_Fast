@@ -8,6 +8,7 @@ import {
 import { PrismaService } from '../../../prisma/prisma.service.js';
 import { RedisService } from '../../../common/redis/redis.service.js';
 import { IdempotencyService } from '../services/idempotency.service.js';
+import { RealtimeService } from '../../realtime/realtime.service.js';
 import { OrderStatus, PaymentStatus } from '@prisma/client';
 
 @Processor(QUEUE_ORDER_TIMEOUT)
@@ -18,6 +19,7 @@ export class OrderTimeoutWorker extends WorkerHost {
     private prisma: PrismaService,
     private redisService: RedisService,
     private idempotencyService: IdempotencyService,
+    private realtimeService: RealtimeService,
   ) {
     super();
   }
@@ -127,6 +129,21 @@ export class OrderTimeoutWorker extends WorkerHost {
         this.logger.log(
           `[OrderTimeoutWorker] ✅ Đã hủy thành công đơn hàng "${order.orderNumber}" và hoàn trả ${order.items.length} mặt hàng vào kho.`,
         );
+
+        // Phát thông báo Realtime Socket.io cho khách hàng và Admin biết đơn đã bị tự động hủy (F02)
+        this.realtimeService.notifyOrderStatusChanged({
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          fromStatus: OrderStatus.PENDING,
+          toStatus: OrderStatus.CANCELLED,
+          note: 'Hệ thống tự động hủy đơn do quá hạn thời gian thanh toán (BullMQ Worker F05)',
+          paymentStatus: order.paymentStatus,
+          updatedAt: new Date().toISOString(),
+          updatedBy: {
+            fullName: 'Hệ thống tự động (BullMQ Worker)',
+            role: 'SYSTEM',
+          },
+        });
 
         return {
           cancelled: true,

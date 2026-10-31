@@ -45,6 +45,8 @@ Thumbs.db
 # Docker data volume directory
 postgres_data/
 redis_data/
+dump.rdb
+*.tsbuildinfo
 
 # Coverage
 coverage/
