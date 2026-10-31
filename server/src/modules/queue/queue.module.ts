@@ -35,3 +35,4 @@ import { QueueController } from './queue.controller.js';
   exports: [QueueService, IdempotencyService, BullModule],
 })
 export class QueueModule {}
+

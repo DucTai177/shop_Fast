@@ -113,3 +113,4 @@ export class EmailWorker extends WorkerHost {
     );
   }
 }
+

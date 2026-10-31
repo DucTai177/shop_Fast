@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueueService } from './services/queue.service.js';
+import { TestTimeoutDto } from './dto/test-timeout.dto.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
@@ -39,25 +40,21 @@ export class QueueController {
   @ApiOperation({
     summary: 'Test nhanh tính năng hủy đơn hẹn giờ (chạy sau số giây tùy chọn, vd 5s để demo trước hội đồng)',
   })
-  async testTimeout(
-    @Body()
-    body: {
-      orderId: string;
-      orderNumber: string;
-      delaySeconds?: number;
-    },
-  ) {
-    const delayMs = (body.delaySeconds || 5) * 1000;
+  @ApiBody({ type: TestTimeoutDto })
+  @ApiResponse({ status: 201, description: 'Lên lịch hẹn giờ hủy đơn thành công' })
+  async testTimeout(@Body() dto: TestTimeoutDto) {
+    const delayMs = (dto.delaySeconds || 5) * 1000;
     const job = await this.queueService.addOrderTimeoutJob(
-      body.orderId,
-      body.orderNumber,
+      dto.orderId,
+      dto.orderNumber,
       delayMs,
     );
 
     return {
-      message: `Đã lên lịch hẹn giờ hủy đơn sau ${body.delaySeconds || 5} giây để phục vụ demo.`,
+      message: `Đã lên lịch hẹn giờ hủy đơn sau ${dto.delaySeconds || 5} giây để phục vụ demo.`,
       jobId: job.id,
       executeAt: new Date(Date.now() + delayMs).toISOString(),
     };
   }
 }
+
