@@ -70,3 +70,4 @@ export class UpdateTicketStatusDto {
   @IsOptional()
   note?: string;
 }
+

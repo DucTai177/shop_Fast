@@ -35,3 +35,4 @@ export interface CreateSupportTicketArgs {
   description: string;
   orderNumber?: string;
 }
+

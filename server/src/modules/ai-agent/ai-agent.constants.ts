@@ -78,3 +78,4 @@ export const AI_TOOLS_DECLARATIONS = [
     },
   },
 ];
+

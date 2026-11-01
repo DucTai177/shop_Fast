@@ -31,3 +31,4 @@ export class ReplyTicketDto {
   @IsNotEmpty({ message: 'Nội dung không được để trống' })
   content: string;
 }
+

@@ -12,3 +12,4 @@ import { AiToolsService } from './tools/ai-tools.service.js';
   exports: [AiAgentService, TicketsService],
 })
 export class AiAgentModule {}
+
