@@ -18,3 +18,4 @@ echo "=================================================="
 
 # Chạy ứng dụng production
 exec node dist/main.js
+

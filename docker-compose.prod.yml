@@ -86,3 +86,4 @@ volumes:
 networks:
   shopfast_network:
     driver: bridge
+

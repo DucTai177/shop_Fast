@@ -74,3 +74,4 @@ echo "👑 Quản trị viên (Admin): admin@shopfast.vn   | Mật khẩu: Admin
 echo "🎧 Chăm sóc khách hàng:   support@shopfast.vn | Mật khẩu: Staff@123456"
 echo "👤 Khách hàng mua sắm:    viet@gmail.com      | Mật khẩu: Customer@123456"
 echo "=============================================================================="
+

@@ -30,3 +30,4 @@ RUN sed -i 's/\r$//' docker-entrypoint.sh
 EXPOSE 3000
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
+
