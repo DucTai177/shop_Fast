@@ -489,12 +489,9 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <span className="text-xl font-black tracking-tight text-white">ShopFast</span>
                 <span className="text-xs bg-emerald-800 text-emerald-200 px-2 py-0.5 rounded-full border border-emerald-600 font-semibold">
-                  Module 6
+                  Official Store
                 </span>
               </div>
-              <p className="text-[11px] text-emerald-100 hidden sm:block">
-                Hệ thống E-Commerce NestJS + PostgreSQL + Redis + Gemini AI
-              </p>
             </div>
           </div>
 
@@ -565,7 +562,7 @@ export default function App() {
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              1. Mua Sắm (F06)
+              Mua Sắm
             </button>
 
             <button
@@ -577,7 +574,7 @@ export default function App() {
               }`}
             >
               <Activity className="w-4 h-4" />
-              2. Theo Dõi Realtime (F02)
+              Theo Dõi Đơn Hàng
             </button>
 
             <button
@@ -589,7 +586,7 @@ export default function App() {
               }`}
             >
               <MessageSquare className="w-4 h-4" />
-              3. Trợ Lý AI Gemini (F01)
+              Trợ Lý AI CSKH
             </button>
 
             {/* Chỉ hiện Tab Quản trị nếu có quyền Admin hoặc CSKH */}
@@ -603,7 +600,7 @@ export default function App() {
                 }`}
               >
                 <Sliders className="w-4 h-4" />
-                4. Quản Trị & Kho (F03, F05)
+                Quản Trị & Kho Vận
               </button>
             )}
           </div>
@@ -631,7 +628,7 @@ export default function App() {
                   Danh Sách Sản Phẩm Công Nghệ
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">
-                  Dữ liệu tải từ PostgreSQL có Redis Caching &lt;2ms (F04). Đặt hàng áp dụng Transaction chống âm kho (F06).
+                  Khám phá các sản phẩm công nghệ cao cấp chính hãng với giá tốt nhất.
                 </p>
               </div>
 
@@ -727,10 +724,10 @@ export default function App() {
             <div className="bg-white rounded-2xl border border-emerald-100 p-6 shadow-sm">
               <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
                 <Activity className="w-6 h-6 text-emerald-600" />
-                Theo Dõi Đơn Hàng Realtime (Socket.io - F02)
+                Theo Dõi Đơn Hàng Trực Tuyến
               </h2>
               <p className="text-xs text-slate-500 mt-1">
-                Nhập mã đơn hàng (ví dụ: SF20261101xxxx) để quan sát sự kiện đổi trạng thái theo thời gian thực mà không cần F5 lại trang!
+                Nhập mã đơn hàng (ví dụ: SF20261101xxxx) để quan sát sự kiện đổi trạng thái theo thời gian thực.
               </p>
 
               <div className="flex gap-2 mt-4 max-w-md">
@@ -934,7 +931,7 @@ export default function App() {
                   <Headphones className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-black text-slate-800 text-sm">ShopFast AI Assistant (Google Gemini F01)</h3>
+                  <h3 className="font-black text-slate-800 text-sm">ShopFast AI Assistant</h3>
                   <div className="text-[11px] text-emerald-700 flex items-center gap-1.5 font-medium">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     Tích hợp Function Calling tự động thao tác Database
@@ -1090,7 +1087,7 @@ export default function App() {
                 <ShieldAlert className="w-12 h-12 text-amber-500 mx-auto" />
                 <h3 className="text-lg font-bold text-slate-800">Quyền Truy Cập Bị Giới Hạn</h3>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Khu vực Quản trị & Kho vận chỉ dành riêng cho <strong>Quản Trị Viên (ADMIN)</strong> và <strong>Nhân Viên Hỗ Trợ (SUPPORT_AGENT)</strong> theo phân quyền RBAC (F03).
+                  Khu vực Quản trị & Kho vận chỉ dành riêng cho <strong>Quản Trị Viên (ADMIN)</strong> và <strong>Nhân Viên Hỗ Trợ (SUPPORT_AGENT)</strong>.
                 </p>
                 <button
                   onClick={() => {
@@ -1111,10 +1108,10 @@ export default function App() {
                   <div>
                     <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
                       <Sliders className="w-6 h-6 text-emerald-600" />
-                      Trung Tâm Quản Trị & Kho Vận (Admin / CSKH)
+                      Trung Tâm Quản Trị & Kho Vận
                     </h2>
                     <p className="text-xs text-slate-500 mt-1">
-                      Đổi trạng thái đơn hàng để kích hoạt Socket.io Realtime (F02) và kích hoạt BullMQ Timeout (F05).
+                      Cập nhật trạng thái đơn hàng và xử lý phiếu hỗ trợ kỹ thuật từ khách hàng.
                     </p>
                   </div>
 
@@ -1159,8 +1156,8 @@ export default function App() {
                             <th className="py-3.5 px-4">Khách Hàng</th>
                             <th className="py-3.5 px-4">Tổng Tiền</th>
                             <th className="py-3.5 px-4">Trạng Thái</th>
-                            <th className="py-3.5 px-4">Hành Động Đổi Trạng Thái (F02 Realtime)</th>
-                            <th className="py-3.5 px-4">Demo BullMQ (F05)</th>
+                            <th className="py-3.5 px-4">Cập Nhật Trạng Thái</th>
+                            <th className="py-3.5 px-4">Hủy Đơn Tự Động</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -1685,7 +1682,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-        ShopFast E-Commerce Platform — Module 6 Thesis Defense Project.
+        © 2026 ShopFast E-Commerce. Mọi quyền được bảo lưu.
       </footer>
     </div>
   );
