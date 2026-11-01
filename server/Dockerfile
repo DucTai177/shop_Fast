@@ -10,7 +10,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Cài đặt toàn bộ dependencies (bao gồm Prisma CLI)
-RUN npm ci
+RUN npm install
 
 # Sinh Prisma Client
 RUN npx prisma generate
