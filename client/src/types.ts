@@ -85,3 +85,4 @@ export interface CurrentUser {
   role: 'ADMIN' | 'WAREHOUSE_STAFF' | 'SUPPORT_AGENT' | 'CUSTOMER';
   token: string;
 }
+

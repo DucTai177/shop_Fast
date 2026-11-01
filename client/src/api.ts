@@ -44,3 +44,4 @@ export const getSocket = (token?: string): Socket => {
   }
   return socketInstance;
 };
+
