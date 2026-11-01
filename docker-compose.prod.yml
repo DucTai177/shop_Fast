@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # 1. Cơ sở dữ liệu PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: shopfast_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgrespassword}
+      POSTGRES_DB: ${DB_NAME:-shopfast}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shopfast_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-shopfast}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Redis Caching & BullMQ Queue
+  redis:
+    image: redis:7-alpine
+    container_name: shopfast_redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - shopfast_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 3. Backend NestJS (Prisma + BullMQ + Socket.io + Gemini AI)
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: shopfast_server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: "postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgrespassword}@postgres:5432/${DB_NAME:-shopfast}?schema=public"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-shopfast_jwt_super_secret_key_2026_module6_defense}
+      JWT_EXPIRES_IN: 1d
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-shopfast_refresh_jwt_super_secret_key_2026_module6}
+      JWT_REFRESH_EXPIRES_IN: 7d
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      CLIENT_URL: "*"
+    networks:
+      - shopfast_network
+
+  # 4. Frontend React (Vite) đóng gói cùng Nginx Reverse Proxy
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: shopfast_client
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+    networks:
+      - shopfast_network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  shopfast_network:
+    driver: bridge

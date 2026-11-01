@@ -20,9 +20,9 @@ async function bootstrap() {
     }),
   );
 
-  // CORS
+  // CORS: Hỗ trợ tự động reflect origin cho cả Localhost, Docker và AWS EC2 Public IP
   app.enableCors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: true,
     credentials: true,
   });
 
