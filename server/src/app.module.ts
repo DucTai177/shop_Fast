@@ -10,6 +10,7 @@ import { CartModule } from './modules/cart/cart.module.js';
 import { OrdersModule } from './modules/orders/orders.module.js';
 import { QueueModule } from './modules/queue/queue.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
+import { AiAgentModule } from './modules/ai-agent/ai-agent.module.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RealtimeModule } from './modules/realtime/realtime.module.js';
     OrdersModule,
     QueueModule,
     RealtimeModule,
+    AiAgentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
